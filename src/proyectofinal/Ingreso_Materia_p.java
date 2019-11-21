@@ -4,12 +4,16 @@
  * and open the template in the editor.
  */
 package proyectofinal;
-
+import Clases.conector;
+import java.sql.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author jordi
  */
 public class Ingreso_Materia_p extends javax.swing.JFrame {
+ 
+   conector con=new conector(); 
 
     /**
      * Creates new form Ingreso_Materia_p
@@ -19,7 +23,14 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         autorizacion.setBackground(new java.awt.Color(0,0,0,1));
     }
-
+    
+    public void limpiar(){
+        this.autorizacion.setText("Ingreso autorizado"); 
+        this.Can.setText("");
+        this.Codigo_m.setText("");
+        this.Tip.setText("");
+        this.cod_autorizacion.setText("");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,7 +45,6 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        Codigo_m = new javax.swing.JTextField();
         Can = new javax.swing.JTextField();
         Tip = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -44,6 +54,7 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
         cod_autorizacion = new javax.swing.JPasswordField();
         salir = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        Codigo_m = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -69,9 +80,6 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel6.setText("Codigo de Autorización:");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 240, -1, -1));
-
-        Codigo_m.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        getContentPane().add(Codigo_m, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 120, 140, -1));
 
         Can.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         getContentPane().add(Can, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, 140, -1));
@@ -129,6 +137,7 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 80, 30));
+        getContentPane().add(Codigo_m, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 120, 140, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Fondo.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 550, 380));
@@ -137,7 +146,6 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         String dato, Cantidad, Codigom, Tipo;
         dato= cod_autorizacion.getText();
         Cantidad= Can.getText();
@@ -146,16 +154,34 @@ public class Ingreso_Materia_p extends javax.swing.JFrame {
         
         if((("autorizar".equals(dato) && !"".equals(Cantidad)) && !"".equals(Codigom)) && !"".equals(Tipo))
         {
-            this.autorizacion.setText("Ingreso autorizado");    
+        Connection cn=null;
+        PreparedStatement pps;
+        try{
+         cn=con.getConnection();
+         pps = cn.prepareStatement("INSERT INTO mp(cod, can, tip) VALUES(?,?,?)");   
+         pps.setString(1, Codigo_m.getText());
+         pps.setString(2, Can.getText());
+         pps.setString(3, Tip.getText());
+         int res = pps.executeUpdate();
+         if(res>0)
+         {
+         JOptionPane.showMessageDialog(null, "DATOS GUARDADOS");
+         limpiar();
+         }
+         else{
+         JOptionPane.showMessageDialog(null, "ERROR AL INGRESAR MATERIA PRIMA"); 
+        }
+         cn.close();
+        }
+        catch(Exception e){
+        System.err.println(e);
+        }
         }
         else
         {
-            this.autorizacion.setText("Ingreso no autorizado");    
+            this.autorizacion.setText("Ingreso no autorizado");  
+            JOptionPane.showMessageDialog(null, "INGRESO NO AUTORIZADO"); 
         }
-        this.Can.setText("");
-        this.Codigo_m.setText("");
-        this.Tip.setText("");
-        this.cod_autorizacion.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void autorizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autorizacionActionPerformed

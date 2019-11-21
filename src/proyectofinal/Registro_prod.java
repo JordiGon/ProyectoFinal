@@ -5,19 +5,34 @@
  */
 package proyectofinal;
 
+import javax.swing.JOptionPane;
+import Clases.conector;
+import java.sql.*;
 /**
  *
  * @author jordi
  */
 public class Registro_prod extends javax.swing.JFrame {
-
+conector con=new conector();
+Connection cn=con.getConnection();
     /**
      * Creates new form Registro_prod
      */
     public Registro_prod() {
         initComponents();
         this.setLocationRelativeTo(null);
-        auto.setBackground(new java.awt.Color(0,0,0,1));
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+        try{
+            String sql="SELECT * FROM mp";
+            ps= cn.prepareStatement(sql);
+            rs= ps.executeQuery();
+            while(rs.next()){
+               this.cod_m.addItem(rs.getString("cod")); 
+            }
+        }catch(SQLException ex){
+            System.err.println(ex.toString());   
+        }
     }
 
     /**
@@ -34,16 +49,16 @@ public class Registro_prod extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         nombre = new javax.swing.JTextField();
-        code = new javax.swing.JTextField();
+        cod_p = new javax.swing.JTextField();
         precio = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         mostrar = new javax.swing.JCheckBox();
         clave = new javax.swing.JPasswordField();
-        jLabel7 = new javax.swing.JLabel();
-        auto = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        cod_m = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -60,23 +75,23 @@ public class Registro_prod extends javax.swing.JFrame {
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jLabel4.setText("Cod mp/prod:");
+        jLabel4.setText("Codigo prod:");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel5.setText("Precio de venta:");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, -1, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 220, -1, -1));
 
         nombre.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         getContentPane().add(nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 100, 150, -1));
 
-        code.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        code.addActionListener(new java.awt.event.ActionListener() {
+        cod_p.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        cod_p.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                codeActionPerformed(evt);
+                cod_pActionPerformed(evt);
             }
         });
-        getContentPane().add(code, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 190, -1));
+        getContentPane().add(cod_p, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 190, -1));
 
         precio.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         precio.addActionListener(new java.awt.event.ActionListener() {
@@ -84,7 +99,7 @@ public class Registro_prod extends javax.swing.JFrame {
                 precioActionPerformed(evt);
             }
         });
-        getContentPane().add(precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 180, 180, -1));
+        getContentPane().add(precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 220, 180, -1));
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jButton1.setText("REGISTRAR");
@@ -93,11 +108,11 @@ public class Registro_prod extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 270, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 320, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel6.setText("Codigo de Autorización: ");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 220, -1, -1));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 260, -1, -1));
 
         mostrar.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         mostrar.setText("Mostrar");
@@ -108,7 +123,7 @@ public class Registro_prod extends javax.swing.JFrame {
                 mostrarActionPerformed(evt);
             }
         });
-        getContentPane().add(mostrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 220, -1, -1));
+        getContentPane().add(mostrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 260, -1, -1));
 
         clave.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         clave.addActionListener(new java.awt.event.ActionListener() {
@@ -116,16 +131,7 @@ public class Registro_prod extends javax.swing.JFrame {
                 claveActionPerformed(evt);
             }
         });
-        getContentPane().add(clave, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 220, 140, -1));
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jLabel7.setText("Estatus:");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 340, -1, -1));
-
-        auto.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        auto.setBorder(null);
-        auto.setOpaque(false);
-        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 340, 150, 20));
+        getContentPane().add(clave, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 260, 140, -1));
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jButton2.setText("X");
@@ -145,15 +151,21 @@ public class Registro_prod extends javax.swing.JFrame {
         });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, -1, -1));
 
+        jLabel7.setText("Codigo MP:");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 180, 80, -1));
+
+        cod_m.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Elija codigo de mp" }));
+        getContentPane().add(cod_m, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 180, 190, -1));
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Fondo.jpg"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void codeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeActionPerformed
+    private void cod_pActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cod_pActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_codeActionPerformed
+    }//GEN-LAST:event_cod_pActionPerformed
 
     private void precioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precioActionPerformed
         // TODO add your handling code here:
@@ -175,20 +187,52 @@ public class Registro_prod extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_claveActionPerformed
 
+    public void limpiar(){
+        this.clave.setText("");
+        this.cod_m.setSelectedIndex(0);
+        this.cod_p.setText("");
+        this.precio.setText("");
+        this.nombre.setText("");
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String nom, cod, pre,au;
+        String nom, cod1, pre,au,cod2;
         au= this.clave.getText();
         nom= this.nombre.getText();
-        cod= this.code.getText();
+        cod1= this.cod_p.getText();
+        cod2= this.cod_m.getSelectedItem().toString();
         pre= this.precio.getText();
-        if((("autorizar".equals(au) && !"".equals(nom)) && !"".equals(cod)) && !"".equals(pre))
+        if((("autorizar".equals(au) && !"".equals(nom)) && !"".equals(cod1)) && !"".equals(pre) && !"Elija codigo de mp".equals(cod2))
         {
-            this.auto.setText("Registro Autorizado");
+           //JOptionPane.showMessageDialog(this, "REGISTRO AUTORIZADO", "AUTORIZACIÓN" , JOptionPane.INFORMATION_MESSAGE);
+        PreparedStatement pps;
+        try{
+         cn=con.getConnection();
+         pps = cn.prepareStatement("INSERT INTO productos(cod_producto, nombre_prod, precio, cod_mp) VALUES(?,?,?,?)");   
+         pps.setString(1, cod_p.getText());
+         pps.setString(2, nombre.getText());
+         pps.setString(3, precio.getText());
+         pps.setString(4, cod_m.getSelectedItem().toString());
+         int res = pps.executeUpdate();
+         if(res>0)
+         {
+         JOptionPane.showMessageDialog(null, "DATOS GUARDADOS");
+         limpiar();
+         }
+         else{
+         JOptionPane.showMessageDialog(null, "ERROR AL INGRESAR MATERIA PRIMA"); 
+        }
+         cn.close();
+        }
+        catch(Exception e){
+        System.err.println(e);
+        
+        }
         }
         else
         {
-            this.auto.setText("Registro no Autorizado");
+            JOptionPane.showMessageDialog(this, "REGISTRO NO AUTORIZADO", "AUTORIZACIÓN" , JOptionPane.ERROR_MESSAGE); 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -240,9 +284,9 @@ public class Registro_prod extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField auto;
     private javax.swing.JPasswordField clave;
-    private javax.swing.JTextField code;
+    private javax.swing.JComboBox<String> cod_m;
+    private javax.swing.JTextField cod_p;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
